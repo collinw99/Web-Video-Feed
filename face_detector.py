@@ -4,7 +4,7 @@ import datetime
 
 # defining face detector
 face_cascade=cv2.CascadeClassifier("/home/collinw99/.local/lib/python3.8/site-packages/cv2/data/haarcascade_frontalface_alt2.xml")
-ds_factor=0.6
+
 class FaceCamera(object):
     def __init__(self, dev):
         #capturing video
@@ -24,7 +24,7 @@ class FaceCamera(object):
         for (x,y,w,h) in face_rects:
             cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
 
-        frame = cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"), (0, frame.shape[0]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"), (0, frame.shape[0]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
         # encode OpenCV raw frame to jpg and displaying it
         ret, jpeg = cv2.imencode('.jpg', frame)

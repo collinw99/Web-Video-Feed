@@ -5,11 +5,14 @@ import datetime
 import time
 
 class MotionCamera(object):
-    def __init__(self, dev, minArea):
+    def __init__(self, dev, minArea, rec):
         #capturing video
         self.video = cv2.VideoCapture(dev)
+        self.out = None
+        self.record = rec
         self.firstFrame = None
         self.minArea = minArea
+        self.prevText = "Unoccupied"
     
     def __del__(self):
         #releasing camera
@@ -23,7 +26,6 @@ class MotionCamera(object):
         text = "Unoccupied"
 
         # get the grayscale frame and apply a blur to reduce false positives
-        frame = imutils.resize(frame, width=500)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray, (21, 21), 0)
 
@@ -52,9 +54,23 @@ class MotionCamera(object):
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
             text = "Occupied"
 
+        # if chose to record video of movement
+        if self.record == 1:
+            # statements to start/stop recording
+            if self.prevText == "Unoccupied" and text == "Occupied":
+                self.out = cv2.VideoWriter('./captures/' + datetime.datetime.now().strftime("%m-%d-%y:%X") + '.MOV', cv2.VideoWriter_fourcc(*'mp4v'), 25.0, (int(self.video.get(3)), int(self.video.get(4))))
+                self.out.write(frame)
+            elif self.prevText == "Occupied" and text == "Occupied":
+                self.out.write(frame)
+            elif self.prevText == "Occupied" and text == "Unoccupied":
+                self.out.release()
+        
         # put text and timestamp on frame
         cv2.putText(frame, "Room Status: {}".format(text), (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-        cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"), (10, frame.shape[0]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
+        cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"), (0, frame.shape[0]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
+        # set the previous text to the current text before returning
+        self.prevText = text
 
         # encode OpenCV raw frame to jpg and displaying it
         ret, jpeg = cv2.imencode('.jpg', frame)
