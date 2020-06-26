@@ -15,7 +15,7 @@ class VideoCamera(object):
         #extracting frames
         ret, frame = self.video.read()
 
-        cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"), (0, frame.shape[0]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"), (0, frame.shape[0]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
 
         # encode OpenCV raw frame to jpg and displaying it
         ret, jpeg = cv2.imencode('.jpg', frame)

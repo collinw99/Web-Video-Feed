@@ -53,6 +53,10 @@ class MotionCamera(object):
             (x, y, w, h) = cv2.boundingRect(c)
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
             text = "Occupied"
+        
+        # put text and timestamp on frame
+        cv2.putText(frame, "Room Status: {}".format(text), (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"), (0, frame.shape[0]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
 
         # if chose to record video of movement
         if self.record == 1:
@@ -64,10 +68,6 @@ class MotionCamera(object):
                 self.out.write(frame)
             elif self.prevText == "Occupied" and text == "Unoccupied":
                 self.out.release()
-        
-        # put text and timestamp on frame
-        cv2.putText(frame, "Room Status: {}".format(text), (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-        cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"), (0, frame.shape[0]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
         # set the previous text to the current text before returning
         self.prevText = text

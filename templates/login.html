@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>Login</title>
+        <style>
+            body {
+                text-align:center;
+            }
+            strong {
+                color:red;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Enter Password</h1>
+        <form action="/login" method="POST">
+            <input type="password" name="password" placeholder="Password">
+            <input type="submit" value="Log in">
+        </form>
+        {% if error %}
+            <p class="error"><strong>{{ error }}</strong>
+        {% endif %}
+    </body>
+</html>
